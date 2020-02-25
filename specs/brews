@@ -12,6 +12,9 @@ source "$(cd "$(dirname "$0")" && pwd)/../pretty-print"
 # TEMPORARY - remove once no one is on the old bats
 brew uninstall bats &>/dev/null || true
 
+# TEMPORARY - remove once no one is on the old hub
+brew uninstall hub &>/dev/null || true
+
 brews=(
     awscli
     # kubernetes
@@ -31,9 +34,9 @@ brews=(
     shellcheck
     wget
     watchman
-    hub
     coreutils
     gnu-sed
+    github/gh/gh
 )
 
 title "Homebrew"
