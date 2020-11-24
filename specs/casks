@@ -12,8 +12,8 @@ casks=(
 )
 
 title "Casks"
+
 installed=$(brew list --cask)
-outdated=$(brew outdated --cask)
 
 for cask in "${casks[@]}"; do
     if ! echo "$installed" | grep -q "$cask"; then
@@ -25,10 +25,6 @@ for cask in "${casks[@]}"; do
             echo_install "Reinstalling $cask"
             brew cask reinstall "$cask" >/dev/null
             print_in_green "${bold}✓ installed!${normal}\n"
-        elif echo "$outdated" | grep -q "$cask"; then
-            echo_install "Upgrading $cask"
-            brew cask upgrade "$cask" >/dev/null
-            print_in_green "${bold}✓ upgraded!${normal}\n"
         else
             print_success_muted "$cask"
         fi
@@ -46,9 +42,3 @@ fi
 echo_install "Cleaning docker"
 docker system prune -f >/dev/null
 print_in_green "${bold}✓ done!${normal}\n"
-
-# casks outside of the reformation specified ones
-other_casks=$(brew outdated --cask | wc -l)
-if [ "$other_casks" -gt 0 ]; then
-    print_warning "$other_casks other casks are outdated. Run 'brew upgrade --cask' to upgrade them."
-fi
