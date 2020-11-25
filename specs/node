@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 source "$(cd "$(dirname "$0")" && pwd)/../pretty-print"
 
-node_major="12"
-node_ver="latest-v$node_major.x"
+node_major="14"
+node_ver="v$node_major.x"
 
 modules=(
 	eslint
@@ -11,25 +11,20 @@ modules=(
 
 title "Node"
 
-if [ ! "$FORCE" = true ] && command -v fnm &>/dev/null; then
-	if brew outdated fnm | grep -q fnm; then
-		echo_install "Upgrading FNM…"
-		brew upgrade Schniz/tap/fnm &>/dev/null
-		print_in_green "${bold}✓ upgraded!${normal}\n"
-	else
-		print_success_muted "fnm"
-	fi
-else
+if ! command -v fnm &>/dev/null; then
 	echo_install "Installing FNM…"
 	brew install Schniz/tap/fnm &>/dev/null
 	print_in_green "${bold}✓ installed!${normal}\n"
+else
+	print_success_muted "fnm"
 fi
 
 eval "$(fnm env)"
 
-if [ "$FORCE" = true ] || ! fnm ls | grep -q "v$node_major."; then
+if [ "$FORCE" = true ] || ! fnm current | grep -q "v$node_major."; then
 	echo_install "Installing node v$node_major"
 	fnm install $node_ver &>/dev/null
+	fnm default $node_ver
 	print_in_green "${bold}✓ installed!${normal}\n"
 else
 	print_success_muted "node v$node_major"

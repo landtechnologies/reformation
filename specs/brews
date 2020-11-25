@@ -42,22 +42,24 @@ brews=(
 
 title "Homebrew"
 
-echo_install "Updating"
-brew update >/dev/null
+echo_install "Updating/Upgrading"
+brew update &>/dev/null
+brew upgrade &>/dev/null
+brew upgrade --cask &>/dev/null
 print_in_green "${bold}✓ done!${normal}\n"
+
 echo_install "Cleaning"
 brew cleanup &>/dev/null
 print_in_green "${bold}✓ done!${normal}\n"
 
 title "Brews"
 
-installed=$(brew list)
-outdated=$(brew outdated)
+installed=$(brew list --formula)
 
 for brew in "${brews[@]}"; do
     if ! echo "$installed" | grep -q "$brew"; then
         echo_install "Installing $brew"
-        brew install --quiet "$brew" >/dev/null
+        brew install --quiet "$brew" &>/dev/null
         brew link --overwrite "$brew" &>/dev/null
         print_in_green "${bold}✓ installed!${normal}\n"
     else
@@ -65,21 +67,11 @@ for brew in "${brews[@]}"; do
             echo_install "Reinstalling $brew"
             brew reinstall --quiet "$brew" >/dev/null
             print_in_green "${bold}✓ installed!${normal}\n"
-        elif echo "$outdated" | grep -q "$brew"; then
-            echo_install "Upgrading $brew"
-            brew upgrade --quiet "$brew" >/dev/null
-            print_in_green "${bold}✓ upgraded!${normal}\n"
         else
             print_success_muted "$brew"
         fi
     fi
 done
-
-# brews outside of the reformation specified ones
-other_brews=$(brew outdated | wc -l)
-if [ "$other_brews" -gt 0 ]; then
-    print_warning "$other_brews other brews are outdated. Run 'brew upgrade' to upgrade them."
-fi
 
 if [[ ! ":$PATH:" == *":/usr/local/opt/grep/libexec/gnubin:"* ]]; then
     print_error "\$PATH entry missing for 'grep'"
