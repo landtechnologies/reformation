@@ -81,7 +81,7 @@ fi
 if [ "$FORCE" = true ] || [ ! -f "$HOME/.bin/promtool" ]; then
   echo_install "Installing promtool"
   docker run --rm -e GOOS=darwin -e GOARCH=amd64 -v "$HOME/.bin":/data golang /bin/bash -c \
-    "go get github.com/prometheus/prometheus/cmd/promtool && cp /go/bin/darwin_amd64/promtool /data"
+    "go get github.com/prometheus/prometheus/cmd/promtool@main && cp /go/bin/darwin_amd64/promtool /data"
   print_in_green "${bold}✓ installed!${normal}\n"
 else
   print_success_muted "promtool"

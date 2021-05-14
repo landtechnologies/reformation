@@ -20,9 +20,12 @@ if [ ! -s "$config" ]; then
     print_in_red "${bold}✗ error!!!${normal}\n"
     print_error "$config is empty, check the output of: gopass ${GOPASS_LANDTECH_STORE}ssh/config"
 else
+    if [ -s ~/.ssh/config ]; then
+        if ! ggrep -q "Include ~/.landtech/ssh/config" ~/.ssh/config; then
+            gsed -i '1iInclude ~/.landtech/ssh/config' ~/.ssh/config
+        fi
+    else
+        echo "Include ~/.landtech/ssh/config" >> ~/.ssh/config
+    fi
     print_in_green "${bold}✓ done!${normal}\n"
-fi
-
-if ! ggrep -q "Include ~/.landtech/ssh/config" ~/.ssh/config; then
-    gsed -i '1iInclude ~/.landtech/ssh/config' ~/.ssh/config
 fi
