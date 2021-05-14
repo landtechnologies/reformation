@@ -9,9 +9,19 @@ export PATH="$HOME/.bin:$PATH"
 export PATH="$HOME/.landtech/bin:$PATH"
 export PATH="$PATH:./node_modules/.bin"
 export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
-export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH:$PATH"
-export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH:$PATH"
+export PATH="/usr/local/opt/grep/libexec/gnubin:$PATH"
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 export MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+if command -v pyenv 1>/dev/null 2>&1;
+then
+  eval "$(pyenv init -)"
+fi
+
+if command -v fnm 1>/dev/null 2>&1;
+then
+  eval "$(fnm env)"
+fi
 
 [ -z "$WELCOME_MESSAGE" ] || echo -e "$WELCOME_MESSAGE"
 
