@@ -46,6 +46,21 @@ set -e
 ###############################################################################
 # FUNCTIONS
 ###############################################################################
+check_for_m1() {
+   if [[ "$(command arch)" == "arm64" ]]; then
+     print_error "Detected [$(command arch)] architecture."
+     print_error "This terminal is not running in x86_64 emulation mode."
+     print_error "In OSX Finder, ctrl-click the terminal app, select 'Get Info'"
+     print_error "then ensure the 'run under rosetta' checkbox is ticked."
+     print_error "Restart the terminal app and re-run the 'reform' steps."
+     print_error
+     print_error "You can confirm if your new terminal is set correctly by running"
+     print_error "the 'arch' command. It should return i386 or x86_64"
+     exit 1
+   else
+      print_success "Architecture emulation mode check (Mac M1 only)"
+   fi
+}
 
 check_internet_connection() {
    if ! ping -c1 google.com &>/dev/null; then
@@ -141,7 +156,7 @@ install_reformrc() {
 install_homebrew() {
    if ! [ -x "$(command -v brew)" ]; then
       step "Installing Homebrew…"
-      curl --fail --retry 3 --retry-delay 1 -sS 'https://raw.githubusercontent.com/Homebrew/install/master/install' | ruby
+      /usr/bin/env bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
       export PATH="/usr/local/bin:$PATH"
       print_success "Homebrew installed!"
    else
@@ -208,6 +223,7 @@ printf "
 "
 
 chapter "Prerequisites…"
+check_for_m1
 install_reformrc
 check_internet_connection
 check_ssh_key
